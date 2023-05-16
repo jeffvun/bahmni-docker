@@ -20,9 +20,8 @@ services:
 
   proxy:
     image: 'bahmni/proxy:${PROXY_IMAGE_TAG:?}'
-    volumes:
+    #volumes:
       # - ${CERTIFICATE_PATH}:/etc/tls
-      - 'bahmni-lab-results:/usr/local/apache2/htdocs/uploaded_results'
     ports:
       - '80:80'
       - '443:443'
@@ -308,6 +307,7 @@ services:
     profiles: ["emr","bahmni-standard"]
     volumes:
       - 'bahmni-document-images:/usr/share/nginx/html/document_images'
+      - 'bahmni-lab-results:/usr/share/nginx/html/uploaded_results'
     environment:
       - OPENMRS_HOST=${OPENMRS_HOST:?}
     depends_on:
@@ -401,6 +401,15 @@ services:
       PACS_INTEGRATION_DB_NAME: ${PACS_INTEGRATION_DB_NAME}
       PACS_INTEGRATION_DB_USERNAME: ${PACS_INTEGRATION_DB_USERNAME}
       PACS_INTEGRATION_DB_PASSWORD: ${PACS_INTEGRATION_DB_PASSWORD}
+
+  sms-service:
+    image: bahmni/sms-service:${SMS_SERVICE_IMAGE_TAG:?}
+    profiles: ["sms"]
+    environment:
+      SMS_TOKEN: ${SMS_TOKEN}
+      SMS_ORIGINATOR: ${SMS_ORIGINATOR}
+      SMS_OPENMRS_HOST: ${OPENMRS_HOST:?}
+      SMS_OPENMRS_PORT: ${OPENMRS_PORT:?}
 
 volumes:
   openelisdbdata:
